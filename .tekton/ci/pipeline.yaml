@@ -156,12 +156,6 @@ spec:
         #   value: '3'
         - name: fail-on-scanned-issues          
           value: 'false'
-      resources:          
-        inputs:
-          - name: image
-            resource: app-image
-            from:
-              - containerize
     - name: record-vulnerabilities
       runAfter: [check-vulnerabilities]
       taskRef:
