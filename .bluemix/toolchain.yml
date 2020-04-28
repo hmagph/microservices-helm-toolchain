@@ -56,8 +56,7 @@ services:
           source-repo: catalog-api-repo          
           policy-name: '[catalog-api] PUBLISH Component Chart Checks'
           git-branch: master
-          app-name: catalog-api
-          image-name: 'catalog-api-{{timestamp}}'
+          app-name: 'catalog-api-{{timestamp}}'
           registry-region-id: '{{form.pipeline.parameters.registry-region}}'
           registry-namespace: '{{form.pipeline.parameters.registry-namespace}}'
           api-key: '{{form.pipeline.parameters.api-key}}'            

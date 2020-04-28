@@ -35,7 +35,7 @@ spec:
   - name: pipeline-run-name
     description: The name of this pipeline run
   - name: pipeline-run-id
-    description: The uuid of this pipeline run   
+    description: The uuid of this pipeline run 
   workspaces:
     - name: artifacts
       description: the artifacts folder for this task

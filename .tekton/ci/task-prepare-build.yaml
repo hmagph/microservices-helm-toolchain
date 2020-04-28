@@ -1,0 +1,96 @@
+apiVersion: tekton.dev/v1beta1
+kind: Task
+metadata:
+  name: prepare-build-task
+spec:
+  params:
+    - name: ibmcloud-api
+      description: the ibmcloud api
+      default: https://cloud.ibm.com
+    - name: git-repository
+      description: The git repository
+    - name: git-branch
+      description: The active branch for the repository
+    - name: git-commit
+      description: The current commit id that was cloned
+    - name: registry-region-id
+      description: The target region for container registry
+    - name: build-number
+      description: Current pipeline build number
+    - name: image-name
+      description: Custom image name (inferred from repo name by default)
+    - name: ""
+      description: Pipeline debug mode
+      default: "0"
+  results:
+    - name: image-url
+      description: The url of the image to build 
+    - name: image-tag
+      description: The tag of the image to build
+  workspaces:
+    - name: artifacts
+      description: A workspace backing by a volume where the files (Dockerfile etc..) are expected to be
+      mountPath: /artifacts
+  steps:
+    - name: check-registry-and-build-image
+      image: ibmcom/pipeline-base-image
+      workingDir: /artifacts
+      env:
+        - name: GIT_REPOSITORY
+          value: $(params.git-repository)
+        - name: GIT_COMMIT
+          value: $(params.git-commit)
+        - name: GIT_BRANCH
+          value: $(params.git-branch)
+        - name: PIPELINE_DEBUG
+          value: $(params.pipeline-debug)            
+        - name: BUILD_NUMBER
+          value: $(params.build-number)
+      args:
+        - |
+          set -e -o pipefail
+          set -x
+          if [ $PIPELINE_DEBUG == 1 ]; then
+              pwd
+              env
+              trap env EXIT
+              set -x
+          fi
+          # Determine image url using: target container registry location and repository name
+
+          # Minting image tag using format: BUILD_NUMBER-BRANCH-COMMIT_ID-TIMESTAMP
+          # e.g. 3-master-50da6912-20181123114435
+          # (use build number as first segment to allow image tag as a patch release name according to semantic versioning)
+          TIMESTAMP=$( date -u "+%Y%m%d%H%M%S")
+          IMAGE_TAG=${TIMESTAMP}
+          if [ ! -z "${GIT_COMMIT}" ]; then
+            GIT_COMMIT_SHORT=$( echo ${GIT_COMMIT} | head -c 8 ) 
+            IMAGE_TAG=${GIT_COMMIT_SHORT}-${IMAGE_TAG}
+          fi
+          if [ ! -z "${GIT_BRANCH}" ]; then IMAGE_TAG=${GIT_BRANCH}-${IMAGE_TAG} ; fi
+          IMAGE_TAG=${BUILD_NUMBER}-${IMAGE_TAG}
+          # Record task results
+          echo -n "${IMAGE_REPOSITORY_URL}" > $(results.image-url.path)
+          echo -n "${IMAGE_TAG}" > $(results.image-tag.path)
+      volumeMounts:
+        - mountPath: /cd-config
+          name: cd-config-volume
+        - mountPath: /steps
+          name: steps-volume
+        - mountPath: /scripts
+          name: check-registry-script
+  volumes:
+    - name: steps-volume
+      emptyDir: {}
+    - name: cd-config-volume
+      configMap:
+        name: toolchain
+        items:
+        - key: toolchain.json
+          path: toolchain.json
+    - name: check-registry-script
+      configMap: 
+        name: check-registry-script
+        items: 
+        - key: check_registry.sh
+          path: check_registry.sh

@@ -36,15 +36,6 @@ spec:
         volumeMode: Filesystem
         accessModes:
           - ReadWriteOnce
-    - apiVersion: tekton.dev/v1beta1
-      kind: PipelineResource
-      metadata:
-        name: image-to-build
-      spec:
-        type: image
-        params:
-          - name: url
-            value: "$(params.registry-domain)/$(params.registry-namespace)/$(params.image-name)"
     # - apiVersion: tekton.dev/v1alpha1
     #   kind: PipelineResource
     #   metadata:
@@ -69,13 +60,6 @@ spec:
       spec:
         pipelineRef:
           name: pipeline
-        resources:
-          - name: app-image
-            resourceRef:
-              name: image-to-build
-          # - name: target-cluster
-          #   resourceRef:
-          #     name: dev-cluster
         workspaces:
           - name: pipeline-artifacts
             persistentVolumeClaim:

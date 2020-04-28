@@ -28,15 +28,12 @@ properties:
 - name: branch
   type: TEXT
   value: ${git-branch}
-- name: image-name
-  type: TEXT
-  value: ${image-name}
 - name: repository
   type: TEXT
   value: "" # will be inferred from toolchain introspection
-- name: registry-domain
+- name: registry-region-id
   type: TEXT
-  value: us.cr.io # ${REGISTRY_REGION_ID}
+  value: ${registry-region-id}
 - name: registry-namespace
   type: TEXT
   value: ${registry-namespace}
