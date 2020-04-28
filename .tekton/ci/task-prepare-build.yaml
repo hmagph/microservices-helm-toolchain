@@ -15,11 +15,14 @@ spec:
       description: The current commit id that was cloned
     - name: registry-region-id
       description: The target region for container registry
-    - name: build-number
-      description: Current pipeline build number
+    - name: registry-namespace
+      description: The target namespace in container registry
     - name: image-name
       description: Custom image name (inferred from repo name by default)
-    - name: ""
+      default: ""
+    - name: build-number
+      description: Current pipeline build number
+    - name: pipeline-debug
       description: Pipeline debug mode
       default: "0"
   results:
@@ -46,6 +49,12 @@ spec:
           value: $(params.pipeline-debug)            
         - name: BUILD_NUMBER
           value: $(params.build-number)
+        - name: IMAGE_NAME
+          value: $(params.image-name)
+        - name: REGISTRY_REGION_ID
+          value: $(params.registry-region-id)
+        - name: REGISTRY_NAMESPACE
+          value: $(params.registry-namespace)
       args:
         - |
           set -e -o pipefail
@@ -57,6 +66,28 @@ spec:
               set -x
           fi
           # Determine image url using: target container registry location and repository name
+          # e.g. ibm:yp:us-south --> us.icr.io
+          if [[ "$REGISTRY_REGION_ID" == *:ys1:* ]]; then
+            REGISTRY_URL="https://stg.icr.io"
+          elif [[ "$REGISTRY_REGION_ID" == "ibm:yp:us-south" ]]; then
+            REGISTRY_URL="https://us.icr.io"
+          elif [[ "$REGISTRY_REGION_ID" == "ibm:yp:us-east" ]]; then
+            REGISTRY_URL="https://us.icr.io"
+          elif [[ "$REGISTRY_REGION_ID" == "ibm:yp:eu-de" ]]; then
+            REGISTRY_URL="https://de.icr.io"
+          elif [[ "$REGISTRY_REGION_ID" == "ibm:yp:eu-gb" ]]; then
+            REGISTRY_URL="https://uk.icr.io"
+          elif [[ "$REGISTRY_REGION_ID" == "ibm:yp:jp-tok" ]]; then
+            REGISTRY_URL="https://jp.icr.io"
+          elif [[ "$REGISTRY_REGION_ID" == "ibm:yp:au-syd" ]]; then
+            REGISTRY_URL="https://au.icr.io"
+          else
+            echo "Unknown registry region: ${REGISTRY_REGION_ID}"
+            exit 1
+          fi
+          echo "REGISTRY_URL=${REGISTRY_URL}"
+          IMAGE_REPOSITORY_URL="${REGISTRY_URL}/${REGISTRY_URL}/${IMAGE_NAME}"
+          echo "IMAGE_REPOSITORY_URL=${IMAGE_REPOSITORY_URL}"
 
           # Minting image tag using format: BUILD_NUMBER-BRANCH-COMMIT_ID-TIMESTAMP
           # e.g. 3-master-50da6912-20181123114435
@@ -69,6 +100,7 @@ spec:
           fi
           if [ ! -z "${GIT_BRANCH}" ]; then IMAGE_TAG=${GIT_BRANCH}-${IMAGE_TAG} ; fi
           IMAGE_TAG=${BUILD_NUMBER}-${IMAGE_TAG}
+          echo "IMAGE_TAG=${IMAGE_TAG}"
           # Record task results
           echo -n "${IMAGE_REPOSITORY_URL}" > $(results.image-url.path)
           echo -n "${IMAGE_TAG}" > $(results.image-tag.path)

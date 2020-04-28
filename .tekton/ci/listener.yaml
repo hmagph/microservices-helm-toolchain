@@ -14,6 +14,8 @@ spec:
     # - name: clusterTargetNamespace
     #   default: prod-tkn
     - name: app-name
+    - name: registry-region-id
+    - name: registry-namespace
     - name: chart-root
       default: chart
   resourcetemplates:
@@ -69,8 +71,6 @@ spec:
             value: $(params.repository)
           - name: branch
             value: $(params.branch)
-          # - name: clusterTargetNamespace
-          #   value: $(params.clusterTargetNamespace)
           - name: app-name
             value: $(params.app-name)
           - name: policy-name
@@ -79,6 +79,10 @@ spec:
             value: $(params.umbrella-repo-name)
           - name: chart-root
             value: $(params.chart-root)
+          - name: registry-region-id
+            value: $(params.registry-region-id)
+          - name: registry-namespace
+            value: $(params.registry-namespace)
 ---
 apiVersion: tekton.dev/v1beta1
 kind: TriggerBinding

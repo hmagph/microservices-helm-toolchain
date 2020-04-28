@@ -21,6 +21,8 @@ spec:
       value: Component chart root folder
     - name: registry-region-id
       description: Region for container registry service
+    - name: registry-namespace
+      description: the namespace in container registry
 #  resources:
     # - name: target-cluster
     #   type: cluster
@@ -118,6 +120,8 @@ spec:
           value: $(tasks.clone-repo.results.git-commit)
         - name: registry-region-id
           value: $(params.registry-region-id)
+        - name: registry-namespace
+          value: $(params.registry-namespace)
     - name: containerize
       runAfter: [prepare-containerize]
       taskRef:
