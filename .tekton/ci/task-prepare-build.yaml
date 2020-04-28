@@ -55,8 +55,8 @@ spec:
           value: $(params.registry-region-id)
         - name: REGISTRY_NAMESPACE
           value: $(params.registry-namespace)
-      args:
-        - |
+      script: |
+          #!/bin/bash
           set -e -o pipefail
           set -x
           if [ $PIPELINE_DEBUG == 1 ]; then
@@ -104,25 +104,4 @@ spec:
           # Record task results
           echo -n "${IMAGE_REPOSITORY_URL}" > $(results.image-url.path)
           echo -n "${IMAGE_TAG}" > $(results.image-tag.path)
-      volumeMounts:
-        - mountPath: /cd-config
-          name: cd-config-volume
-        - mountPath: /steps
-          name: steps-volume
-        - mountPath: /scripts
-          name: check-registry-script
-  volumes:
-    - name: steps-volume
-      emptyDir: {}
-    - name: cd-config-volume
-      configMap:
-        name: toolchain
-        items:
-        - key: toolchain.json
-          path: toolchain.json
-    - name: check-registry-script
-      configMap: 
-        name: check-registry-script
-        items: 
-        - key: check_registry.sh
-          path: check_registry.sh
+
