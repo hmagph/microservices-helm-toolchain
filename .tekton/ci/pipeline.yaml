@@ -29,7 +29,7 @@ spec:
   workspaces:
     - name: pipeline-artifacts
   tasks:
-    - name: configure
+    - name: read-toolchain
       taskRef:
         name: read-toolchain-properties-task
       workspaces:
