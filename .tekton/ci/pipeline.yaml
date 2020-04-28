@@ -112,11 +112,11 @@ spec:
           value: $(params.app-name)
         - name: build-number
           value: $(tasks.read-toolchain.results.build-number)
-        - name: repository
+        - name: git-repository
           value: $(tasks.clone-repo.results.git-repository)
-        - name: branch
+        - name: git-branch
           value: $(tasks.clone-repo.results.git-branch)
-        - name: commit-id
+        - name: git-commit
           value: $(tasks.clone-repo.results.git-commit)
         - name: registry-region-id
           value: $(params.registry-region-id)
