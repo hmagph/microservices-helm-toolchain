@@ -140,10 +140,6 @@ spec:
           value: $(tasks.prepare-containerize.results.image-url)
         - name: additional-tags
           value: $(tasks.prepare-containerize.results.image-tag)
-      resources:          
-        outputs:
-          - name: builtImage
-            resource: app-image
     - name: check-vulnerabilities
       runAfter: [containerize]
       taskRef:
