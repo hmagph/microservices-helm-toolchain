@@ -33,8 +33,8 @@ services:
   catalog-api-repo:
     service_id: hostedgit
     parameters:
-      repo-name: '{{form.hostedgit.parameters.catalog-api-repo-name}}'
-      repo-url: '{{form.hostedgit.parameters.catalog-api-repo-url}}'
+      repo_name: '{{form.hostedgit.parameters.catalog-api-repo-name}}'
+      repo_url: '{{form.hostedgit.parameters.catalog-api-repo-url}}'
       type: clone
       has_issues: false
       enable_traceability: true
@@ -66,8 +66,8 @@ services:
   orders-api-repo:
     service_id: hostedgit
     parameters:
-      repo-name: '{{form.hostedgit.parameters.orders-api-repo-name}}'
-      repo-url: '{{form.hostedgit.parameters.orders-api-repo-url}}'
+      repo_name: '{{form.hostedgit.parameters.orders-api-repo-name}}'
+      repo_url: '{{form.hostedgit.parameters.orders-api-repo-url}}'
       type: clone
       has_issues: false
       enable_traceability: true
@@ -95,8 +95,8 @@ services:
   ui-repo:
     service_id: hostedgit
     parameters:
-      repo-name: '{{form.hostedgit.parameters.ui-repo-name}}'
-      repo-url: '{{form.hostedgit.parameters.ui-repo-url}}'
+      repo_name: '{{form.hostedgit.parameters.ui-repo-name}}'
+      repo_url: '{{form.hostedgit.parameters.ui-repo-url}}'
       type: clone
       has_issues: false
       enable_traceability: true
@@ -126,24 +126,24 @@ services:
   tekton-pipeline-repo:
     service_id: githubconsolidated
     parameters:
-      repo-name: tekton-pipelines
-      repo-url: https://github.com/hmagph/microservices-helm-toolchain
+      repo_name: tekton-pipelines
+      repo_url: https://github.com/hmagph/microservices-helm-toolchain
       type: link
       has_issues: false
       enable_traceability: false
   tekton-task-repo:
     service_id: githubconsolidated
     parameters:
-      repo-name: tekton-catalog
-      repo-url: https://github.com/open-toolchain/tekton-catalog
+      repo_name: tekton-catalog
+      repo_url: https://github.com/open-toolchain/tekton-catalog
       type: link
       has_issues: false
       enable_traceability: false
   umbrella-repo:
     service_id: hostedgit
     parameters:
-      repo-name: '{{form.hostedgit.parameters.umbrella-repo-name}}'
-      repo-url: '{{form.hostedgit.parameters.umbrella-repo-url}}'
+      repo_name: '{{form.hostedgit.parameters.umbrella-repo-name}}'
+      repo_url: '{{form.hostedgit.parameters.umbrella-repo-url}}'
       type: clone
       has_issues: true
       enable_traceability: true
@@ -221,7 +221,7 @@ form:
       staging-cluster-namespace: staging
       prod-space: prod
       prod-cluster-namespace: prod
-      umbrella-app-name: '{{services.umbrella-repo.parameters.repo-name}}'
+      umbrella-app-name: '{{services.umbrella-repo.parameters.repo_name}}'
     schema:
       $ref: deploy.json
   hostedgit:
