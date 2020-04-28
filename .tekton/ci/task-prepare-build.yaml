@@ -86,7 +86,7 @@ spec:
             exit 1
           fi
           echo "REGISTRY_URL=${REGISTRY_URL}"
-          IMAGE_REPOSITORY_URL="${REGISTRY_URL}/${REGISTRY_URL}/${IMAGE_NAME}"
+          IMAGE_REPOSITORY_URL="${REGISTRY_URL}/${REGISTRY_NAMESPACE}/${IMAGE_NAME}"
           echo "IMAGE_REPOSITORY_URL=${IMAGE_REPOSITORY_URL}"
 
           # Minting image tag using format: BUILD_NUMBER-BRANCH-COMMIT_ID-TIMESTAMP
