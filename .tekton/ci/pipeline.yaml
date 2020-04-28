@@ -108,7 +108,7 @@ spec:
         - name: workspace
           workspace: pipeline-artifacts
       params:
-        - name: app-name
+        - name: image-name
           value: $(params.app-name)
         - name: build-number
           value: $(tasks.read-toolchain.results.build-number)
