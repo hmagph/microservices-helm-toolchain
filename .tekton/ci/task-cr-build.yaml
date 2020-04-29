@@ -47,6 +47,11 @@ spec:
     - name: pipeline-debug
       description: Pipeline debug mode
       default: "0"
+  results:
+  - name: image-digest
+    description: SHA256 digest of the built image
+  - name: image-tags
+    description: Comma-separated list of tags associated to the built image      
   workspaces:
     - name: workspace
       description: A workspace backing by a volume where the files (Dockerfile etc..) are expected to be
@@ -223,7 +228,9 @@ spec:
             echo "$PROPERTIES_FILE content:"
             cat $PROPERTIES_FILE
           fi
-
+          # Record task results
+          echo -n "${IMAGE_TAGS}" > $(results.image-tags.path)
+          echo -n "${IMAGE_MANIFEST_SHA}" > $(results.image-digest.path)
       volumeMounts:
         - mountPath: /cd-config
           name: cd-config-volume

@@ -70,19 +70,19 @@ spec:
           # Determine image url using: target container registry location and repository name
           # e.g. ibm:yp:us-south --> us.icr.io
           if [[ "$REGISTRY_REGION_ID" == *:ys1:* ]]; then
-            REGISTRY_URL="https://stg.icr.io"
+            REGISTRY_URL="stg.icr.io"
           elif [[ "$REGISTRY_REGION_ID" == "ibm:yp:us-south" ]]; then
-            REGISTRY_URL="https://us.icr.io"
+            REGISTRY_URL="us.icr.io"
           elif [[ "$REGISTRY_REGION_ID" == "ibm:yp:us-east" ]]; then
-            REGISTRY_URL="https://us.icr.io"
+            REGISTRY_URL="us.icr.io"
           elif [[ "$REGISTRY_REGION_ID" == "ibm:yp:eu-de" ]]; then
-            REGISTRY_URL="https://de.icr.io"
+            REGISTRY_URL="de.icr.io"
           elif [[ "$REGISTRY_REGION_ID" == "ibm:yp:eu-gb" ]]; then
-            REGISTRY_URL="https://uk.icr.io"
+            REGISTRY_URL="uk.icr.io"
           elif [[ "$REGISTRY_REGION_ID" == "ibm:yp:jp-tok" ]]; then
-            REGISTRY_URL="https://jp.icr.io"
+            REGISTRY_URL="jp.icr.io"
           elif [[ "$REGISTRY_REGION_ID" == "ibm:yp:au-syd" ]]; then
-            REGISTRY_URL="https://au.icr.io"
+            REGISTRY_URL="au.icr.io"
           else
             echo "Unknown registry region: ${REGISTRY_REGION_ID}"
             exit 1
