@@ -119,6 +119,7 @@ spec:
           value: $(params.registry-namespace) 
       script: |
           #!/bin/bash
+          set -x
           set -e -o pipefail
           #source ./build.properties
           ##########################################################################
