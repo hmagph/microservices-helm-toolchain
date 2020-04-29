@@ -190,8 +190,8 @@ spec:
         - name: artifacts
           workspace: pipeline-artifacts
       params:
-        - name: policy-ame
-          value: $(params.policyName)
+        - name: policy-name
+          value: $(params.policy-name)
         - name: umbrella-repo-name
           value: $(params.umbrella-repo-name)
         - name: chart-root
