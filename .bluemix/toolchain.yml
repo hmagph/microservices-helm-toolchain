@@ -61,7 +61,7 @@ services:
           registry-namespace: '{{form.pipeline.parameters.registry-namespace}}'
           api-key: '{{form.pipeline.parameters.api-key}}'            
           umbrella-repo-name: '{{form.hostedgit.parameters.umbrella-repo-name}}'
-        execute: false
+        execute: true
   orders-api-repo:
     service_id: hostedgit
     parameters:
@@ -75,22 +75,25 @@ services:
     parameters:
       services:
         - orders-api-repo # first one is the code repo
+        - tekton-pipeline-repo
+        - tekton-task-repo
       name: 'orders-api-{{timestamp}}'
+      type: tekton
       configuration:
         content:
-          $ref: ci.pipeline.classic.yml
-          $refType: text
+          $text: ci.pipeline.yml
         env:
-          POLICY_NAME: '[orders-api] PUBLISH Component Chart Checks'
-          GIT_REPO: orders-api-repo
-          GIT_BRANCH: master
-          APP_NAME: orders-api
-          IMAGE_NAME: 'orders-api-{{timestamp}}'
-          REGISTRY_REGION_ID: '{{form.pipeline.parameters.registry-region}}'
-          REGISTRY_NAMESPACE: '{{form.pipeline.parameters.registry-namespace}}'
-          API_KEY: '{{form.pipeline.parameters.api-key}}'          
-          UMBRELLA_REPO_NAME: '{{form.hostedgit.parameters.umbrella-repo-name}}'
-        execute: false
+          tekton-pipeline-repo: tekton-pipeline-repo
+          tekton-task-repo: tekton-task-repo
+          source-repo: orders-api-repo          
+          policy-name: '[orders-api] PUBLISH Component Chart Checks'
+          git-branch: master
+          app-name: 'orders-api-{{timestamp}}'
+          registry-region-id: '{{form.pipeline.parameters.registry-region}}'
+          registry-namespace: '{{form.pipeline.parameters.registry-namespace}}'
+          api-key: '{{form.pipeline.parameters.api-key}}'            
+          umbrella-repo-name: '{{form.hostedgit.parameters.umbrella-repo-name}}'
+        execute: true
   ui-repo:
     service_id: hostedgit
     parameters:
@@ -104,24 +107,24 @@ services:
     parameters:
       services:
         - ui-repo # first one is the code repo
+        - tekton-pipeline-repo
+        - tekton-task-repo
       name: 'ui-{{timestamp}}'
-      ui-pipeline: true
+      type: tekton
       configuration:
         content:
-          $ref: ci.pipeline.classic.yml
-          $refType: text
+          $text: ci.pipeline.yml
         env:
-          POLICY_NAME: '[ui] PUBLISH Component Chart Checks'
-          SAUCE_LABS: test
-          GIT_REPO: ui-repo
-          GIT_BRANCH: master
-          APP_NAME: ui
-          IMAGE_NAME: 'ui-{{timestamp}}'
-          REGISTRY_REGION_ID: '{{form.pipeline.parameters.registry-region}}'
-          REGISTRY_NAMESPACE: '{{form.pipeline.parameters.registry-namespace}}'
-          API_KEY: '{{form.pipeline.parameters.api-key}}'            
-          UMBRELLA_REPO_NAME: '{{form.hostedgit.parameters.umbrella-repo-name}}'
-        execute: false
+          tekton-pipeline-repo: tekton-pipeline-repo
+          tekton-task-repo: tekton-task-repo
+          source-repo: ui-repo          
+          policy-name: '[ui] PUBLISH Component Chart Checks'
+          git-branch: master
+          app-name: 'ui-{{timestamp}}'
+          registry-region-id: '{{form.pipeline.parameters.registry-region}}'
+          registry-namespace: '{{form.pipeline.parameters.registry-namespace}}'
+          api-key: '{{form.pipeline.parameters.api-key}}'            
+          umbrella-repo-name: '{{form.hostedgit.parameters.umbrella-repo-name}}'
   tekton-pipeline-repo:
     service_id: githubconsolidated
     parameters:
