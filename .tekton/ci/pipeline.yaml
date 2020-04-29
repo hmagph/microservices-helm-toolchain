@@ -150,6 +150,10 @@ spec:
       params:
         - name: scan-report-file
           value: 'app-image-va-report.json'
+        - name: image-url
+          value: $(tasks.prepare-containerize.results.image-url)
+        - name: image-digest
+          value: $(tasks.containerize.results.image-digest)
         # - name: maxIteration
         #   value: '5'
         # - name: sleepTime
