@@ -26,6 +26,8 @@ spec:
       description: Pipeline debug mode
       default: "0"
   results:
+    - name: registry-url
+      description: The url of the containr registry 
     - name: image-url
       description: The url of the image to build 
     - name: image-tag
@@ -102,6 +104,7 @@ spec:
           IMAGE_TAG=${BUILD_NUMBER}-${IMAGE_TAG}
           echo "IMAGE_TAG=${IMAGE_TAG}"
           # Record task results
+          echo -n "${REGISTRY_URL}" > $(results.registry-url.path)
           echo -n "${IMAGE_REPOSITORY_URL}" > $(results.image-url.path)
           echo -n "${IMAGE_TAG}" > $(results.image-tag.path)
 

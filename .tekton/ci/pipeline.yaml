@@ -178,20 +178,40 @@ spec:
           value: 'app-image-va-report.json'
         - name: test-types
           value: 'vulnerabilityadvisor'
-    # - name: publish-component
-    #   runAfter: [check-vulnerabilities]
-    #   taskRef:
-    #     name: publish-component-task
-    #   workspaces:
-    #     - name: artifacts
-    #       workspace: pipeline-artifacts
-    #   params:
-    #     - name: policyName
-    #       value: $(params.policyName)
-    #     - name: umbrellaRepoName
-    #       value: $(params.umbrellaRepoName)
-    #     - name: chartRoot
-    #       value: $(params.chartRoot)
+    - name: publish-component
+      runAfter: [check-vulnerabilities]
+      taskRef:
+        name: publish-component-task
+      workspaces:
+        - name: artifacts
+          workspace: pipeline-artifacts
+      params:
+        - name: policy-ame
+          value: $(params.policyName)
+        - name: umbrella-repo-name
+          value: $(params.umbrella-repo-name)
+        - name: chart-root
+          value: $(params.chart-root)
+        - name: app-name
+          value: $(params.app-name)
+        - name: toolchain-id
+          value: $(tasks.read-toolchain.results.toolchain-id)
+        - name: build-number
+          value: $(tasks.read-toolchain.results.build-number)
+        - name: git-repository
+          value: $(tasks.clone-repo.results.git-repository)
+        - name: git-branch
+          value: $(tasks.clone-repo.results.git-branch)
+        - name: git-commit
+          value: $(tasks.clone-repo.results.git-commit)
+        - name: git-user
+          value: $(tasks.clone-repo.results.git-user)
+        - name: git-token
+          value: $(tasks.clone-repo.results.git-token)
+        - name: registry-namespace
+          value: $(params.registry-namespace)
+        - name: registry-url
+          value: $(tasks.prepare-containerize.results.registry-url)
     #================================================      
     # - name: cluster-setup
     #   taskRef:

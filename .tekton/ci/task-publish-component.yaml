@@ -1,27 +1,48 @@
-apiVersion: tekton.dev/v1alpha1
+apiVersion: tekton.dev/v1beta1
 kind: Task
 metadata:
   name: publish-component-task
 spec:
-  inputs:
-    params:
-      - name: task-pvc
-        description: the task pvc - this is the volume where the files (Dockerfile etc..) are expected to be
-      - name: ibmcloud-api
-        description: the ibmcloud api
-        default: https://cloud.ibm.com
-      - name: continuous-delivery-context-secret
-        description: name of the configmap containing the continuous delivery pipeline context secrets
-        default: cd-secret
-      - name: container-registry-apikey-secret-key
-        description: field in the secret that contains the api key used to login to ibmcloud container registry
-        default: 'API_KEY'
-      - name: policyName
-        description: Policy name for DevOps Insights
-      - name: umbrellaRepoName
-        description: Umbrella repo name
-      - name: chartRoot
-        value: Component chart root folder 
+  params:
+    - name: ibmcloud-api
+      description: the ibmcloud api
+      default: https://cloud.ibm.com
+    - name: continuous-delivery-context-secret
+      description: name of the configmap containing the continuous delivery pipeline context secrets
+      default: cd-secret
+    - name: container-registry-apikey-secret-key
+      description: field in the secret that contains the api key used to login to ibmcloud container registry
+      default: 'API_KEY'
+    - name: policy-name
+      description: Policy name for DevOps Insights
+    - name: umbrella-repo-name
+      description: Umbrella repo name
+    - name: chart-root
+      value: Component chart root folder
+    - name: app-name
+      description: Application name
+    - name: toolchain-id
+      description: Toolchain service instance id
+    - name: build-number
+      description: Pipeline build number
+    - name: git-repository
+      description: The cloned repository
+    - name: git-branch
+      description: The active branch for the repository
+    - name: git-commit
+      description: The current commit id that was cloned
+    - name: git-user
+      description: The auth user that cloned the repository
+    - name: git-token
+      description: The auth token that cloned the repository
+    - name: registry-url
+      description: URL for container registry service
+    - name: registry-namespace
+      description: the namespace in container registry
+  workspaces:
+    - name: artifacts
+      description: the artifacts folder for this task
+      mountPath: /artifacts
   steps:
     - name: check-gate
       image: ibmcom/pipeline-base-image
@@ -30,15 +51,20 @@ spec:
         - name: IBM_CLOUD_API_KEY
           valueFrom:
             secretKeyRef:
-              name: $(inputs.params.continuous-delivery-context-secret)
-              key: $(inputs.params.container-registry-apikey-secret-key)
+              name: $(params.continuous-delivery-context-secret)
+              key: $(params.container-registry-apikey-secret-key)
         - name: POLICY_NAME
-          value: $(inputs.params.policyName)  
-      command: ["/bin/bash", "-c"]
-      args:
-        - |
+          value: $(params.policy-name)
+        - name: APP_NAME
+          value: $(params.app-name)
+        - name: TOOLCHAIN_ID
+          value: $(params.toolchain-id)  
+        - name: SOURCE_BUILD_NUMBER
+          value: $(params.build-number)
+      script: |
+          #!/bin/bash
           set -e -o pipefail
-          source ./build.properties
+          #source ./build.properties
           export TOOLCHAIN_ID=${TOOLCHAIN_ID} # for doi plugin
           ##########################################################################
           # Setting HOME explicitly to have ibmcloud plugins available
@@ -46,13 +72,10 @@ spec:
           # until https://github.com/tektoncd/pipeline/issues/1836 is fixed
           export HOME="/root"
           ##########################################################################
-          SOURCE_BUILD_NUMBER=${BUILD_NUMBER}
           source <(curl -sSL "https://raw.githubusercontent.com/open-toolchain/commons/master/scripts/check_publish_gate_component_helm_chart.sh")
       volumeMounts:
         - mountPath: /cd-config
           name: cd-config-volume
-        - mountPath: /artifacts
-          name: task-volume
     - name: publish-component
       image: ibmcom/pipeline-base-image
       workingDir: /artifacts
@@ -60,17 +83,42 @@ spec:
         - name: IBM_CLOUD_API_KEY
           valueFrom:
             secretKeyRef:
-              name: $(inputs.params.continuous-delivery-context-secret)
-              key: $(inputs.params.container-registry-apikey-secret-key)
+              name: $(params.continuous-delivery-context-secret)
+              key: $(params.container-registry-apikey-secret-key)
         - name: UMBRELLA_REPO_NAME
-          value: $(inputs.params.umbrellaRepoName)
+          value: $(params.umbrella-repo-name)
         - name: CHART_ROOT
-          value: $(inputs.params.chartRoot) 
-      command: ["/bin/bash", "-c"]
-      args:
-        - |
+          value: $(params.chart-root)
+        - name: SOURCE_GIT_URL
+          value: $(params.git-repository)
+        - name: GIT_BRANCH
+          value: $(params.git-branch)
+        - name: SOURCE_GIT_COMMIT
+          value: $(params.git-commit)
+        - name: SOURCE_GIT_USER
+          value: $(params.git-user)
+        - name: SOURCE_GIT_PASSWORD
+          value: $(params.git-token)
+        - name: PIPELINE_DEBUG
+          value: $(params.pipeline-debug)            
+        - name: SOURCE_BUILD_NUMBER
+          value: $(params.build-number)
+        - name: PIPELINE_TOOLCHAIN_ID
+          value: $(params.toolchain-id)
+        - name: APP_NAME
+          value: $(params.app-name)  
+        - name: IMAGE_NAME
+          value: $(params.app-name)
+        - name: IMAGE_TAG
+          value: $(params.image-tag)
+        - name: REGISTRY_URL
+          value: $(params.registry-domain) 
+        - name: REGISTRY_NAMESPACE
+          value: $(params.registry-namespace) 
+      script: |
+          #!/bin/bash
           set -e -o pipefail
-          source ./build.properties
+          #source ./build.properties
           ##########################################################################
           # Setting HOME explicitly to have ibmcloud plugins available
           # doing the export rather than env definition is a workaround
@@ -78,18 +126,12 @@ spec:
           export HOME="/root"
           ##########################################################################
           cp ../cd-config/toolchain.json ./_toolchain.json #script expecting classic toolchain.json
-          SOURCE_GIT_URL=${GIT_URL}
-          SOURCE_GIT_COMMIT=${GIT_COMMIT}
-          SOURCE_GIT_USER=${GIT_USER}
           SOURCE_GIT_PASSWORD=${GIT_PASSWORD}
-          SOURCE_BUILD_NUMBER=${BUILD_NUMBER}
           IMAGE_TAG=$(echo $IMAGE_TAGS | cut -d, -f1) # keep first tag only
           source <(curl -sSL "https://raw.githubusercontent.com/open-toolchain/commons/master/scripts/publish_component_helm_chart.sh")
       volumeMounts:
         - mountPath: /cd-config
           name: cd-config-volume
-        - mountPath: /artifacts
-          name: task-volume
   volumes:
     - name: cd-config-volume
       configMap:
@@ -97,6 +139,4 @@ spec:
         items:
         - key: toolchain.json
           path: toolchain.json
-    - name: task-volume
-      persistentVolumeClaim:
-        claimName: $(inputs.params.task-pvc)
+
