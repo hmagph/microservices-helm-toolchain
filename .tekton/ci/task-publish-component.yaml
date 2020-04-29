@@ -130,7 +130,6 @@ spec:
           ##########################################################################
           cp ../cd-config/toolchain.json ./_toolchain.json #script expecting classic toolchain.json
           SOURCE_GIT_PASSWORD=${GIT_PASSWORD}
-          IMAGE_TAG=$(echo $IMAGE_TAGS | cut -d, -f1) # keep first tag only
           source <(curl -sSL "https://raw.githubusercontent.com/open-toolchain/commons/master/scripts/publish_component_helm_chart.sh")
       volumeMounts:
         - mountPath: /cd-config
