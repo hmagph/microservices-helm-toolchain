@@ -7,7 +7,7 @@ spec:
     params:
       - name: task-pvc
         description: the output pvc
-      - name: deploymentFile
+      - name: deployment-file
         default: deployment.yml
       - name: imagePropertiesFile
         description: file containing properties of the image to be scanned
@@ -25,7 +25,7 @@ spec:
       args:
         - |
           set -e -o pipefail
-          if [ ! -f "$(params.deploymentFile)" ]; then
+          if [ ! -f "$(params.deployment-file)" ]; then
             echo "WARN: No deployment file exists. Generating one"
             # TODO
             exit 1
@@ -61,18 +61,18 @@ spec:
             PIPELINE_IMAGE_URL="$INPUT_IMAGE_URL@$INPUT_IMAGE_DIGEST"
           fi
 
-          echo -e "Updating $(params.deploymentFile) manifest with image name: ${PIPELINE_IMAGE_URL}"
+          echo -e "Updating $(params.deployment-file) manifest with image name: ${PIPELINE_IMAGE_URL}"
           # find the yaml document index for the K8S deployment definition
-          DEPLOYMENT_DOC_INDEX=$(yq read --doc "*" --tojson $(params.deploymentFile) | jq -r 'to_entries | .[] | select(.value.kind | ascii_downcase=="deployment") | .key')
+          DEPLOYMENT_DOC_INDEX=$(yq read --doc "*" --tojson $(params.deployment-file) | jq -r 'to_entries | .[] | select(.value.kind | ascii_downcase=="deployment") | .key')
           if [ -z "$DEPLOYMENT_DOC_INDEX" ]; then
-            echo "No Kubernetes Deployment definition found in $(params.deploymentFile). Updating YAML document with index 0"
+            echo "No Kubernetes Deployment definition found in $(params.deployment-file). Updating YAML document with index 0"
             DEPLOYMENT_DOC_INDEX=0
           fi
           # Update deployment with image name
-          yq write $(params.deploymentFile) --doc $DEPLOYMENT_DOC_INDEX "spec.template.spec.containers[0].image" "${PIPELINE_IMAGE_URL}" > /steps/$(params.deploymentFile)
-          cp --force /steps/$(params.deploymentFile) /artifacts/$(params.deploymentFile)
+          yq write $(params.deployment-file) --doc $DEPLOYMENT_DOC_INDEX "spec.template.spec.containers[0].image" "${PIPELINE_IMAGE_URL}" > /steps/$(params.deployment-file)
+          cp --force /steps/$(params.deployment-file) /artifacts/$(params.deployment-file)
           # 
-          cat $(params.deploymentFile)
+          cat $(params.deployment-file)
       volumeMounts:
         - mountPath: /artifacts
           name: task-volume      

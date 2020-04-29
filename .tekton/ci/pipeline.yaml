@@ -9,7 +9,8 @@ spec:
     - name: branch
       description: the branch for the git repo
     # - name: clusterTargetNamespace     
-    - name: deploymentFile
+    - name: deployment-file
+      description: the manifest for kube deployment
       default: deployment.yml
     - name: app-name
       description: the name of the app
@@ -245,8 +246,8 @@ spec:
     #   params:
     #     - name: task-pvc
     #       value: $(params.pipeline-pvc)
-    #     - name: deploymentFile
-    #       value: $(params.deploymentFile)
+    #     - name: deployment-file
+    #       value: $(params.deployment-file)
     #   resources:          
     #     inputs:
     #       - name: image
@@ -290,11 +291,11 @@ spec:
     #         echo "DEPLOYING using manifest"
     #         CLUSTER_NAMESPACE=$(params.clusterTargetNamespace)
     #         set -x
-    #         kubectl apply --namespace $CLUSTER_NAMESPACE -f $(params.deploymentFile)
+    #         kubectl apply --namespace $CLUSTER_NAMESPACE -f $(params.deployment-file)
     #         set +x
     #         echo "=========================================================="
-    #         DEPLOYMENT_DOC_INDEX=$(yq read --doc "*" --tojson $(params.deploymentFile) | jq -r 'to_entries | .[] | select(.value.kind | ascii_downcase=="deployment") | .key')
-    #         DEPLOYMENT_NAME=$(yq read --doc ${DEPLOYMENT_DOC_INDEX} $(params.deploymentFile) metadata.name)
+    #         DEPLOYMENT_DOC_INDEX=$(yq read --doc "*" --tojson $(params.deployment-file) | jq -r 'to_entries | .[] | select(.value.kind | ascii_downcase=="deployment") | .key')
+    #         DEPLOYMENT_NAME=$(yq read --doc ${DEPLOYMENT_DOC_INDEX} $(params.deployment-file) metadata.name)
     #         echo -e "CHECKING deployment rollout of ${DEPLOYMENT_NAME}"
     #         echo ""
     #         set -x
