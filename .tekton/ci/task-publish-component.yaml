@@ -98,9 +98,7 @@ spec:
         - name: SOURCE_GIT_USER
           value: $(params.git-user)
         - name: SOURCE_GIT_PASSWORD
-          value: $(params.git-token)
-        - name: PIPELINE_DEBUG
-          value: $(params.pipeline-debug)            
+          value: $(params.git-token)         
         - name: SOURCE_BUILD_NUMBER
           value: $(params.build-number)
         - name: PIPELINE_TOOLCHAIN_ID
