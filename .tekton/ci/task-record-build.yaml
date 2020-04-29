@@ -32,23 +32,23 @@ spec:
       workingDir: /artifacts
       env:
         - name: APP_NAME
-          value: $(inputs.params.app-name)
+          value: $(params.app-name)
         - name: TOOLCHAIN_ID
-          value: $(inputs.params.toolchain-id)  
+          value: $(params.toolchain-id)  
         - name: BUILD_NUMBER
-          value: $(inputs.params.build-number)
+          value: $(params.build-number)
         - name: GIT_URL
-          value: $(inputs.params.repository) 
+          value: $(params.repository) 
         - name: GIT_BRANCH
-          value: $(inputs.params.branch)   
+          value: $(params.branch)   
         - name: GIT_COMMIT
-          value: $(inputs.params.commit-id)
+          value: $(params.commit-id)
         - name: IBM_CLOUD_API
-          value: $(inputs.params.ibmcloud-api)   
+          value: $(params.ibmcloud-api)   
         - name: IBM_CLOUD_API_KEY
           valueFrom:
             secretKeyRef:
-              name: $(inputs.params.continuous-delivery-context-secret)
+              name: $(params.continuous-delivery-context-secret)
               key: API_KEY
               optional: true
       script: |

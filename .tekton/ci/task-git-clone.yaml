@@ -81,17 +81,17 @@ spec:
       - name: API_KEY
         valueFrom:
           secretKeyRef:
-            name: $(inputs.params.continuous-delivery-context-secret)
-            key: $(inputs.params.ibmcloud-apikey-secret-key)
+            name: $(params.continuous-delivery-context-secret)
+            key: $(params.ibmcloud-apikey-secret-key)
             optional: true
       - name: PIPELINE_DEBUG
-        value: $(inputs.params.pipeline-debug)            
+        value: $(params.pipeline-debug)            
   steps:
     - name: fetch-git-token
       image: ibmcom/pipeline-base-image
       env:
         - name: REPOSITORY
-          value: $(inputs.params.repository)
+          value: $(params.repository)
       script: |
           #!/bin/bash
           set -x
@@ -135,13 +135,13 @@ spec:
             GIT_AUTH_USER="x-token-auth"
           fi
 
-          GIT_TOKEN="$(inputs.params.gitAccessToken)"
+          GIT_TOKEN="$(params.gitAccessToken)"
           if [ -z "$GIT_TOKEN" ]; then
             echo "Fetching token for $REPOSITORY"
             ibmcloud config --check-version false
-            ibmcloud login -a $(inputs.params.ibmcloud-api) -no-region --apikey $API_KEY
-            if [ "$(inputs.params.resourceGroup)" ]; then
-              ibmcloud target -g $(inputs.params.resourceGroup)
+            ibmcloud login -a $(params.ibmcloud-api) -no-region --apikey $API_KEY
+            if [ "$(params.resourceGroup)" ]; then
+              ibmcloud target -g $(params.resourceGroup)
             fi
             TOKEN=$(ibmcloud iam oauth-tokens --output JSON | jq -r '.iam_token')
             GIT_TOKEN_URL=$(jq -r --arg git_repo "$REPOSITORY" '.services[] | select (.parameters.repo_url==$git_repo) | .parameters.token_url' /cd-config/toolchain.json)
@@ -175,23 +175,23 @@ spec:
       image: alpine/git
       env:
         - name: REPOSITORY
-          value: $(inputs.params.repository)
+          value: $(params.repository)
         - name: BRANCH
-          value: $(inputs.params.branch)
+          value: $(params.branch)
         - name: REVISION
-          value: $(inputs.params.revision)
+          value: $(params.revision)
         - name: PR_REPOSITORY
-          value: $(inputs.params.pr_repository)
+          value: $(params.pr_repository)
         - name: PR_BRANCH
-          value: $(inputs.params.pr_branch)
+          value: $(params.pr_branch)
         - name: PR_REVISION
-          value: $(inputs.params.pr_revision)
+          value: $(params.pr_revision)
         - name: DIRECTORY_NAME
-          value: $(inputs.params.directoryName)
+          value: $(params.directoryName)
         - name: PROPERTIES_FILE
-          value: $(inputs.params.propertiesFile)
+          value: $(params.propertiesFile)
         - name: JSON_FILE_GIT_CREDENTIALS
-          value: $(inputs.params.gitCredentialsJsonFile)
+          value: $(params.gitCredentialsJsonFile)
       script: |
           #!/bin/sh
           #set -e -o pipefail

@@ -26,7 +26,7 @@ spec:
         - name: IBM_CLOUD_API_KEY
           valueFrom:
             secretKeyRef:
-              name: $(inputs.params.continuous-delivery-context-secret)
+              name: $(params.continuous-delivery-context-secret)
               key: API_KEY
               optional: true
       script: |
