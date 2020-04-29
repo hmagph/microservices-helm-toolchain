@@ -216,6 +216,10 @@ spec:
           value: $(params.registry-namespace)
         - name: registry-url
           value: $(tasks.prepare-containerize.results.registry-url)
+        - name: image-tag
+          value: $(tasks.prepare-containerize.results.image-tag)
+        - name: toolchain-id
+          value: $(tasks.read-toolchain.results.toolchain-id)
     #================================================      
     # - name: cluster-setup
     #   taskRef:

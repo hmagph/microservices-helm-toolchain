@@ -39,6 +39,10 @@ spec:
       description: URL for container registry service
     - name: registry-namespace
       description: the namespace in container registry
+    - name: toolchain-id
+      description: Toolchain service instance id
+    - name: image-tag
+      description: The tag of the built image
   workspaces:
     - name: artifacts
       description: the artifacts folder for this task
