@@ -93,15 +93,15 @@ spec:
           value: $(params.umbrella-repo-name)
         - name: CHART_ROOT
           value: $(params.chart-root)
-        - name: SOURCE_GIT_URL
+        - name: GIT_URL
           value: $(params.git-repository)
         - name: GIT_BRANCH
           value: $(params.git-branch)
-        - name: SOURCE_GIT_COMMIT
+        - name: GIT_COMMIT
           value: $(params.git-commit)
-        - name: SOURCE_GIT_USER
+        - name: GIT_USER
           value: $(params.git-user)
-        - name: SOURCE_GIT_PASSWORD
+        - name: GIT_PASSWORD
           value: $(params.git-token)         
         - name: SOURCE_BUILD_NUMBER
           value: $(params.build-number)
