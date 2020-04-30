@@ -22,6 +22,9 @@ properties:
 - name: app-name
   type: TEXT
   value: ${app-name}
+- name: image-name
+  type: TEXT
+  value: ${image-name}
 - name: cluster-name
   type: TEXT
   value: mycluster
@@ -47,7 +50,7 @@ triggers:
 - eventListener: event-listener-manual-run
   name: Manual Trigger
   type: manual
-- branch: master
+- branch: fix-12524
   eventListener: event-listener-git-commit
   events:
     push: true

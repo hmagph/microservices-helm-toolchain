@@ -55,8 +55,9 @@ services:
           tekton-task-repo: tekton-task-repo
           source-repo: catalog-api-repo          
           policy-name: '[catalog-api] PUBLISH Component Chart Checks'
-          git-branch: master
-          app-name: 'catalog-api-{{timestamp}}'
+          git-branch: fix-12524
+          app-name: 'catalog-api'
+          image-name: 'catalog-api-{{timestamp}}'
           registry-region-id: '{{form.pipeline.parameters.registry-region}}'
           registry-namespace: '{{form.pipeline.parameters.registry-namespace}}'
           api-key: '{{form.pipeline.parameters.api-key}}'            
@@ -87,8 +88,9 @@ services:
           tekton-task-repo: tekton-task-repo
           source-repo: orders-api-repo          
           policy-name: '[orders-api] PUBLISH Component Chart Checks'
-          git-branch: master
-          app-name: 'orders-api-{{timestamp}}'
+          git-branch: fix-12524
+          app-name: 'orders-api'
+          image-name: 'orders-api-{{timestamp}}'
           registry-region-id: '{{form.pipeline.parameters.registry-region}}'
           registry-namespace: '{{form.pipeline.parameters.registry-namespace}}'
           api-key: '{{form.pipeline.parameters.api-key}}'            
@@ -119,8 +121,9 @@ services:
           tekton-task-repo: tekton-task-repo
           source-repo: ui-repo          
           policy-name: '[ui] PUBLISH Component Chart Checks'
-          git-branch: master
-          app-name: 'ui-{{timestamp}}'
+          git-branch: fix-12524
+          app-name: 'ui'
+          image-name: 'ui-{{timestamp}}'
           registry-region-id: '{{form.pipeline.parameters.registry-region}}'
           registry-namespace: '{{form.pipeline.parameters.registry-namespace}}'
           api-key: '{{form.pipeline.parameters.api-key}}'            

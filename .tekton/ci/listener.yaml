@@ -14,6 +14,7 @@ spec:
     # - name: clusterTargetNamespace
     #   default: prod-tkn
     - name: app-name
+    - name: image-name
     - name: registry-region-id
     - name: registry-namespace
     - name: chart-root
@@ -73,6 +74,8 @@ spec:
             value: $(params.branch)
           - name: app-name
             value: $(params.app-name)
+          - name: image-name
+            value: $(params.image-name)
           - name: policy-name
             value: $(params.policy-name)
           - name: umbrella-repo-name

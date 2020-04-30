@@ -14,6 +14,8 @@ spec:
       default: deployment.yml
     - name: app-name
       description: the name of the app
+    - name: image-name
+      description: the name of the app image
     - name: policy-name
       description: the policy for publishing the app
     - name: umbrella-repo-name
@@ -110,7 +112,7 @@ spec:
           workspace: pipeline-artifacts
       params:
         - name: image-name
-          value: $(params.app-name)
+          value: $(params.image-name)
         - name: build-number
           value: $(tasks.read-toolchain.results.build-number)
         - name: git-repository
