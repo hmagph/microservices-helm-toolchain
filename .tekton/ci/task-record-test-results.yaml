@@ -40,7 +40,9 @@ spec:
         - name: FILE_LOCATIONS
           value: $(params.file-locations) 
         - name: TEST_TYPES
-          value: $(params.test-types)   
+          value: $(params.test-types)
+        - name: TEST_STATUS
+          value: $(params.test-status) 
         - name: IBM_CLOUD_API
           value: $(params.ibmcloud-api)   
         - name: IBM_CLOUD_API_KEY
